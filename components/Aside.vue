@@ -2,9 +2,11 @@
   <div :class="$style.aside">
     <el-menu
       class="el-menu-vertical-demo"
+      default-active="1"
       background-color="#137dc4"
       text-color="#aba8a8"
-      active-text-color="#fff">
+      active-text-color="#fff"
+      @select="click">
       <el-menu-item index="1">
         <i class="el-icon-menu"></i>
         <span>Trang chủ</span>
@@ -47,7 +49,17 @@
 
 <script>
 export default {
-  name: 'AsidePage'
+  name: 'AsidePage',
+  data() {
+    return {
+      indexComponent: 1,
+    }
+  },
+  methods: {
+    click(index) {
+      this.$emit('index-component', index)
+    }
+  }
 }
 </script>
 
