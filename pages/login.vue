@@ -34,7 +34,7 @@
         </el-main>
         <el-aside width="35%">
           <div :class="$style.contentAside">
-            <span :class="$style.textHello">Hello, Tú Nhi!</span>
+            <span :class="$style.textHello">Hello, Friends!</span>
             <span :class="$style.textDescription"
               >Enter your personal details and start jouney with us</span
             >
