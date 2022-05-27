@@ -3,6 +3,7 @@
     <div>
       {{ userid }}
       <nuxt-link class="button" :to="{ name: 'index' }">Back</nuxt-link>
+      <div class="button" @click="click">click de</div>
     </div>
   </div>
 </template>
@@ -13,6 +14,11 @@ export default {
   data() {
     return {
       userid: this.$route.params.userid
+    }
+  },
+  methods: {
+    click() {
+      console.log(this)
     }
   }
 }
