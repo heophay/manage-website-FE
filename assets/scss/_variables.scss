@@ -3,6 +3,8 @@
   --color-primary: #137dc4;
 }
 
+$color-white: #fff;
+
 * {
   margin: 0;
   padding: 0;
@@ -12,7 +14,7 @@
 }
 
 .app {
-  background-color: #cccccc2e;
+  background-color: #fff;
   min-height: 100vh;
   color: var(--text-color-primary);
 }
