@@ -16,30 +16,33 @@
             </el-row>
             <!-- <home-page /> -->
             <!-- <my-info /> -->
-            <payment />
+            <!-- <payment /> -->
+            <!-- <list-bills /> -->
+            <list-prod />
           </div>
         </el-main>
     </el-container>
 </template>
 
 <script>
+// import ListBills from '~/components/ListBills.vue'
+import ListProd from '~/components/ListProd.vue'
 // import HomePage from '~/components/HomePage.vue'
 // import MyInfo from '~/components/MyInfo.vue'
-import Payment from '~/components/Payment.vue'
+// import Payment from '~/components/Payment.vue'
 export default {
   name: 'HomeUser',
-  components: { Payment },
+  components: { ListProd },
   layout: 'MainLayout',
   data() {
     return {
       indexComponent: 1,
-      headerTitle: 'Thanh toán'
+      headerTitle: 'Thêm sản phẩm'
     }
   },
   methods: {
     onChangeIndex(index) {
       this.indexComponent = index
-      console.log(this.indexComponent)
     }
   },
 }
