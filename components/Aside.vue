@@ -68,7 +68,5 @@ export default {
   background-color: var(--color-primary);
   color: #fff;
   height: 100vh;
-  margin-right: 15px;
-
 }
 </style>
