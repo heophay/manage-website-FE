@@ -37,7 +37,7 @@
             type="danger"
             @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
         </template>
-    </el-table-column>
+      </el-table-column>
     </el-table>
   </div>
 
@@ -45,7 +45,7 @@
 
 <script>
 export default {
-  name: 'ListBills',
+  name: 'ListProd',
   data() {
     return {
       prods: [

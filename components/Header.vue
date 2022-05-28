@@ -1,10 +1,8 @@
 <template>
   <div :class="$style.header">
-    <el-row>
-      <el-col :span="24">
-        <span>Here is Header</span>
-      </el-col>
-    </el-row>
+    <span :class="$style.icon">
+      <i class="el-icon-user" />
+    </span>
   </div>
 </template>
 
@@ -18,5 +16,14 @@ export default {
 @import "@/assets/scss/variables";
 .header {
   color: #fff;
+  height: 100%;
+
+  .icon {
+    i {
+      font-size: 60px;
+      margin-top: 15px;
+      margin-left: 20px;
+    }
+  }
 }
 </style>
