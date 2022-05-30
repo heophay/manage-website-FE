@@ -1,6 +1,6 @@
 <template>
   <el-container class="app">
-    <el-header height="12vh"><Header /></el-header>
+    <el-header height="8vh"><Header /></el-header>
     <Nuxt />
   </el-container>
 </template>

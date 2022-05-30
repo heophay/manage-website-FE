@@ -14,30 +14,26 @@
                 </div>
               </el-col>
             </el-row>
-            <!-- <home-page /> -->
-            <!-- <my-info /> -->
-            <!-- <payment /> -->
-            <list-bills />
-            <!-- <list-prod /> -->
+            <home-page v-if="indexComponent === '1'" />
+            <my-info v-if="indexComponent === '2'" />
+            <payment v-if="indexComponent === '3'" />
+            <list-prod v-if="indexComponent === '4-1'" />
+            <add-prod v-if="indexComponent === '4-2'" />
+            <list-bills v-if="indexComponent === '5-1'" />
+            <total-revenue v-if="indexComponent === '5-2'" />
           </div>
         </el-main>
     </el-container>
 </template>
 
 <script>
-import ListBills from '~/components/ListBills.vue'
-// import ListProd from '~/components/ListProd.vue'
-// import HomePage from '~/components/HomePage.vue'
-// import MyInfo from '~/components/MyInfo.vue'
-// import Payment from '~/components/Payment.vue'
 export default {
   name: 'HomeUser',
-  components: { ListBills },
   layout: 'MainLayout',
   data() {
     return {
-      indexComponent: 1,
-      headerTitle: 'Danh sách đơn hàng đã thanh toán'
+      indexComponent: '1',
+      headerTitle: 'Thống kê'
     }
   },
   methods: {
@@ -62,9 +58,8 @@ export default {
     }
 
     .rowTitle {
-      border-bottom: 1px solid #ccc;
-      height: 90px;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid black;
+      height: 75px;
       padding: 32px 50px;
     }
   }

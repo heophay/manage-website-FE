@@ -1,14 +1,27 @@
 <template>
   <div :class="$style.header">
-    <span :class="$style.icon">
-      <i class="el-icon-user" />
-    </span>
+    <div :class="$style.avatar">
+      <span :class="$style.icon">
+        <i class="el-icon-user" />
+      </span>
+      <span> {{ user.name }}</span>
+    </div>
+    <div>
+      <el-button :class="$style.btnLogout" type="text">Đăng xuất</el-button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HeaderPage'
+  name: 'HeaderPage',
+  data() {
+    return {
+      user: {
+        name: 'Nguyễn Bá Rôn',
+      }
+    }
+  },
 }
 </script>
 
@@ -17,12 +30,25 @@ export default {
 .header {
   color: #fff;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+
+  .btnLogout {
+    color: #fff;
+    font-size: 16px;
+  }
+
+  .avatar {
+    display: flex;
+    align-items: center;
+  }
 
   .icon {
     i {
-      font-size: 60px;
-      margin-top: 15px;
-      margin-left: 20px;
+      font-size: 34px;
+      margin-right: 15px;
     }
   }
 }

@@ -67,6 +67,6 @@ export default {
 .aside {
   background-color: var(--color-primary);
   color: #fff;
-  height: 100vh;
+  height: 92vh;
 }
 </style>

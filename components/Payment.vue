@@ -141,7 +141,7 @@
       <el-row type="flex" justify="end">
         <el-col :span="3" :offset="2">
           <span>Tổng</span>
-          <el-input v-model="input" />
+          <span>{{ totalPrice }}</span>
         </el-col>
       </el-row>
     </div>
@@ -176,6 +176,13 @@ export default {
           price: 1500.000,
         },
       ]
+    }
+  },
+  computed: {
+    totalPrice() {
+      return this.listProd.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.price * currentValue.num
+      }, 0)
     }
   },
 }

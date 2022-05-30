@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.screen">
-     <el-table
+    <el-table
       :data="bills.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
       height="500"
       stripe
@@ -30,7 +30,7 @@
             type="primary"
             @click="handleEdit(scope.$index, scope.row)">Xem chi tiết</el-button>
         </template>
-    </el-table-column>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -149,7 +149,9 @@ export default {
           datetime: '26/5/2022',
           employee: 'NGuyễn Bá Rôn',
         },
-      ]
+      ],
+      search:'',
+
     }
   },
 }
