@@ -2,6 +2,7 @@
     <el-container :class="$style.home">
       <el-aside width="15vw">
         <Aside
+          :list-aside="listAside"
           @index-component="onChangeIndex"
         />
       </el-aside>
@@ -33,12 +34,62 @@ export default {
   data() {
     return {
       indexComponent: '1',
-      headerTitle: 'Thống kê'
+      headerTitle: 'Thống kê',
+      listAside: []
     }
+  },
+  watch: {
+    indexComponent(newVal) {
+      const component = this.listAside.filter((e) => e.index === newVal)
+      this.headerTitle = component[0].title
+    }
+  },
+  mounted() {
+    this.getInitData()
   },
   methods: {
     onChangeIndex(index) {
       this.indexComponent = index
+    },
+    getInitData() {
+      this.listAside = [
+        {
+          index: '1',
+          title: 'Trang chủ',
+        },
+        {
+          index: '2',
+          title: 'Thông tin cá nhân',
+        },
+        {
+          index: '3',
+          title: 'Thanh toán',
+        },
+        {
+          index: '4-1',
+          title: 'Danh sách sản phẩm',
+        },
+        {
+          index: '4-2',
+          title: 'Thêm & sửa sản phẩm',
+        },
+        {
+          index: '5-1',
+          title: 'Danh sách đơn hàng',
+        },
+        {
+          index: '5-2',
+          title: 'Thống kê',
+        },
+        {
+          index: '6-1',
+          title: 'Danh sách nhân viên',
+        },
+        {
+          index: '6-2',
+          title: 'Thêm sửa nhân viên',
+        },
+      ]
     }
   },
 }
