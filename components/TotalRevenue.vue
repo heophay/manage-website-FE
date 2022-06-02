@@ -11,7 +11,7 @@
           <el-radio-button label="Năm"></el-radio-button>
         </el-radio-group>
         <div>
-          <el-select v-model="radioResult.day" placeholder="Ngày">
+          <el-select v-model="radioResult.day" placeholder="Ngày" :disabled="radioLabel === 'Tháng' || radioLabel === 'Năm'">
             <el-option
               v-for="item in getDays()"
               :key="item.value"
@@ -20,7 +20,7 @@
               :disabled="item.disabled">
             </el-option>
           </el-select>
-          <el-select v-model="radioResult.month" placeholder="Tháng">
+          <el-select v-model="radioResult.month" placeholder="Tháng" :disabled="radioLabel === 'Năm'">
             <el-option
               v-for="item in getMonths()"
               :key="item.value"
@@ -138,6 +138,84 @@ export default {
           datetime: '26/5/2022',
           employee: 'NGuyễn Bá Rôn',
         },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
+        {
+          id: 1,
+          total_prices: 150000000,
+          datetime: '26/5/2022',
+          employee: 'NGuyễn Bá Rôn',
+        },
       ],
     }
   },
@@ -201,9 +279,11 @@ export default {
     }
   }
   .listBills {
-    margin: 40px 0;
-    border: 1px solid #ccc;
+    margin: 30px 0;
+    border: 1px solid #9d9a9a;
     width: 80%;
+    border-radius: 8px;
+    overflow: hidden;
   }
   .screenTotal {
     display: flex;

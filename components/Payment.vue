@@ -1,153 +1,118 @@
 <template>
-  <div :class="$style.infoScreen">
-    <!-- Đơn hàng -->
-    <div>
-      <span :class="$style.labelPay">Đơn hàng</span>
-      <el-row type="flex" :class="$style.rowInfo">
-        <el-col :span="10">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Đơn số</span>
-            <el-input
-              v-model="payment.id"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-              :disabled="true"
-            />
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Nhân viên</span>
-            <el-input
-              v-model="payment.employee"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-    <!-- Khách hàng -->
-    <div>
-      <span :class="$style.labelPay">Khách hàng</span>
-      <el-row type="flex" :class="$style.rowInfo">
-        <el-col :span="10">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Tên khách hàng</span>
-            <el-input
-              v-model="payment.customer"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-              :disabled="true"
-            />
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Số điện thoại</span>
-            <el-input
-              v-model="payment.phone_customer"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-      </el-row>
+  <div :class="$style.screen">
+    <!-- Đơn hàng & Khách hàng-->
+    <div :class="$style.screenMainInfo">
+      <div :class="$style.screenMainInfoItem">
+        <span :class="$style.labelItem">Đơn hàng</span>
+        <div :class="$style.row">
+          <span :class="$style.rowLabel">Đơn số</span>
+          <el-input
+            v-model="payment.id"
+            placeholder="Pick a date"
+            suffix-icon="el-icon-date"
+            :class="$style.rowInput"
+            :disabled="true"
+          />
+        </div>
+        <div :class="$style.row">
+          <span :class="$style.rowLabel">Nhân viên</span>
+          <el-input
+            v-model="payment.employee"
+            placeholder="Pick a date"
+            suffix-icon="el-icon-date"
+            :class="$style.rowInput"
+            :disabled="true"
+          />
+        </div>
+      </div>
+      <div :class="[$style.screenMainInfoItem, $style.screenCustomer]">
+        <span :class="$style.labelItem">Khách hàng</span>
+        <div :class="$style.row">
+          <span :class="$style.rowLabel">Tên khách hàng</span>
+          <el-input
+            v-model="payment.customer"
+            placeholder="Pick a date"
+            suffix-icon="el-icon-date"
+            :class="[$style.rowInput, $style.rowCustomer]"
+          />
+        </div>
+        <div :class="$style.row">
+          <span :class="$style.rowLabel">Số điện thoại</span>
+          <el-input
+            v-model="payment.phone_customer"
+            placeholder="Pick a date"
+            suffix-icon="el-icon-date"
+            :class="[$style.rowInput, $style.rowCustomer]"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Sản phẩm -->
-    <div>
+    <div :class="$style.screenProd">
       <span :class="$style.labelPay">Sản phẩm</span>
-      <el-row type="flex" :class="$style.rowInfo">
-        <el-col :span="10">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Sản phẩm 1</span>
-            <el-input
-              v-model="listProd[0].name"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Số lượng</span>
-            <el-input
-              v-model="listProd[0].num"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-        <el-col :span="7">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Đơn giá</span>
-            <el-input
-              v-model="listProd[0].price"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-      </el-row>
-      <el-row type="flex" :class="$style.rowInfo">
-        <el-col :span="10">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Sản phẩm 2</span>
-            <el-input
-              v-model="listProd[1].name"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Số lượng</span>
-            <el-input
-              v-model="listProd[1].num"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-        <el-col :span="7">
-          <div :class="$style.colInfo">
-            <span :class="$style.colInfoLabel">Đơn giá</span>
-            <el-input
-              v-model="listProd[1].price"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
-              :class="$style.colInforInput"
-            />
-          </div>
-        </el-col>
-      </el-row>
-      <el-row>
+      <div :class="$style.listProd">
+        <el-row
+          v-for="(prod, index) in listProd"
+          :key="index"
+          type="flex"
+          :class="$style.rowProd"
+          justify="center"
+        >
+          <el-col :span="8">
+            <div :class="$style.colProd">
+              <span :class="$style.colLabel">Sản phẩm {{ index + 1 }}</span>
+              <el-input
+                v-model="prod.name"
+                placeholder="Pick a date"
+                suffix-icon="el-icon-date"
+                :class="$style.colInput"
+              />
+            </div>
+          </el-col>
+          <el-col :span="5" :offset="1">
+            <div :class="$style.colProd">
+              <span :class="$style.colLabel">Số lượng</span>
+              <el-input
+                v-model="prod.num"
+                placeholder="Pick a date"
+                suffix-icon="el-icon-date"
+                :class="[$style.colInput, $style.colQuantity]"
+              />
+            </div>
+          </el-col>
+          <el-col :span="6" :offset="1">
+            <div :class="$style.colProd">
+              <span :class="$style.colLabel">Đơn giá</span>
+              <el-input
+                v-model="prod.price"
+                placeholder="Pick a date"
+                suffix-icon="el-icon-date"
+                :class="$style.colInput"
+              />
+            </div>
+          </el-col>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="medium"
+            circle
+            @click="onDelete(prod)" />
+        </el-row>
+      </div>
+
+      <el-row type="flex" :class="$style.rowBtnAdd" justify="space-between">
         <el-col :span="10" :offset="2">
-          <el-button type="primary">Thêm</el-button>
-          <el-button>Xóa</el-button>
+          <el-button type="primary" @click="onAddClick">Thêm</el-button>
         </el-col>
-      </el-row>
-      <el-row type="flex" justify="end">
-        <el-col :span="3" :offset="2">
+        <el-col :span="4" :offset="2">
           <span>Tổng</span>
-          <span>{{ totalPrice }}</span>
+          <span :class="$style.totalValue">{{ totalPrice }}</span>
         </el-col>
       </el-row>
     </div>
 
-
-    <el-row type="flex" :class="$style.rowInfo" justify="center">
+    <el-row type="flex" :class="$style.rowPayment" justify="center">
       <el-button type="primary">Thanh toán</el-button>
     </el-row>
   </div>
@@ -168,14 +133,14 @@ export default {
         {
           name: 'sp1',
           num: 5,
-          price: 500.000,
+          price: 500.0,
         },
         {
           name: 'sp2',
           num: 10,
-          price: 1500.000,
+          price: 1500.0,
         },
-      ]
+      ],
     }
   },
   computed: {
@@ -183,43 +148,130 @@ export default {
       return this.listProd.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.price * currentValue.num
       }, 0)
+    },
+  },
+  methods: {
+    onAddClick() {
+      this.listProd.push({
+        name: 'sp2',
+        num: 10,
+        price: 1500.0,
+      })
+    },
+    onDelete(prod) {
+      const index = this.listProd.indexOf(prod)
+      if (index !== -1) {
+        this.listProd.splice(index, 1)
+      }
     }
   },
 }
 </script>
 
 <style lang="scss" module>
-.infoScreen {
-  padding: 30px 60px;
+.screen {
+  padding: 15px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  .labelPay {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 22px;
-    margin-left: 10px;
-  }
+  .screenMainInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
 
-  .rowInfo {
-    margin-bottom: 20px;
-    margin-top: 20px;
-
-    .colInfo {
-      margin-bottom: 10px;
+    .screenMainInfoItem {
+      border: 1px solid var(--color-primary);
+      margin-bottom: 20px;
+      padding: 20px 32px;
+      border-radius: 20px;
       display: flex;
-      padding: 0px 30px;
-      margin-bottom: 10px;
+      flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
+      width: 26vw;
 
-      .colInfoLabel {
-        margin-right: 24px;
+      .labelItem {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 12px;
       }
-      .colInforInput {
-        width: 56%;
+
+      .row {
+        display: flex;
+        margin-bottom: 10px;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+
+        .rowLabel {
+          margin-right: 12px;
+        }
+
+        .rowInput {
+          width: 74%;
+        }
       }
-  }
+    }
+
+    .screenCustomer {
+      width: 30vw;
+
+      .rowCustomer {
+        width: 67% !important;
+      }
+    }
   }
 
+  .screenProd {
+    border: 1px solid var(--color-primary);
+    width: 100%;
+    padding: 20px 30px;
+    border-radius: 20px;
+    height: 334px;
+
+    .labelPay {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+    .listProd {
+      max-height: 200px;
+      margin-top: 10px;
+      overflow-y: auto;
+      .rowProd {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+
+        .colProd {
+          .colInput {
+            width: 70%;
+            &.colQuantity {
+              width: 50%;
+            }
+          }
+        }
+      }
+    }
+    .rowBtnAdd {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+
+      .totalValue {
+        font-size: 24px;
+        font-weight: 600;
+        border: 1px solid #ccc;
+        padding: 12px;
+        border-radius: 8px;
+      }
+    }
+  }
+
+  .rowPayment {
+    margin-top: 16px;
+  }
 
   :global {
     .el-row {

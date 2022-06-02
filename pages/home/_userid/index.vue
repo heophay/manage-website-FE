@@ -18,8 +18,8 @@
             <home-page v-if="indexComponent === '1'" />
             <my-info v-if="indexComponent === '2'" />
             <payment v-if="indexComponent === '3'" />
-            <list-prod v-if="indexComponent === '4-1'" />
-            <add-prod v-if="indexComponent === '4-2'" />
+            <list-prod v-if="indexComponent === '4-1'" @index-component="onChangeIndex" @product="getProd" />
+            <add-prod v-if="indexComponent === '4-2'" :product="prod" />
             <list-bills v-if="indexComponent === '5-1'" />
             <total-revenue v-if="indexComponent === '5-2'" />
           </div>
@@ -34,8 +34,9 @@ export default {
   data() {
     return {
       indexComponent: '1',
-      headerTitle: 'Thống kê',
-      listAside: []
+      headerTitle: 'Trang chủ',
+      listAside: [],
+      prod: null,
     }
   },
   watch: {
@@ -50,6 +51,9 @@ export default {
   methods: {
     onChangeIndex(index) {
       this.indexComponent = index
+    },
+    getProd(val) {
+      this.prod = val
     },
     getInitData() {
       this.listAside = [

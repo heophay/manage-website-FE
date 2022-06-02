@@ -2,7 +2,7 @@
   <div :class="$style.screen">
     <el-table
       :data="prods.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-      height="500"
+      height="526"
       stripe
       style="width: 100%">
       <el-table-column
@@ -31,7 +31,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+            @click="onEdit(scope.$index, scope.row)">Edit</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -165,8 +165,9 @@ export default {
     }
   },
   methods: {
-    handleEdit(index) {
-      console.log(index)
+    onEdit(index, row) {
+      this.$emit('product', row)
+      this.$emit('index-component', '4-2')
     }
   },
 }
@@ -174,6 +175,12 @@ export default {
 
 <style lang="scss" module>
 .screen {
-  padding: 20px 40px;
+  padding: 40px;
+  display: flex;
+  :global {
+    .el-table {
+      margin: auto;
+    }
+  }
 }
 </style>

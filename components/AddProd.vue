@@ -7,8 +7,8 @@
             <span :class="$style.colLabel">Tên sản phẩm</span>
             <el-input
               v-model="prod.name"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
+              placeholder="Type product name"
+              suffix-icon="el-icon-s-goods"
               :class="$style.colInput"
             />
           </div>
@@ -18,8 +18,8 @@
             <span :class="$style.colLabel">Giá bán</span>
             <el-input
               v-model="prod.price"
-              placeholder="Pick a date"
-              suffix-icon="el-icon-date"
+              placeholder="0"
+              suffix-icon="el-icon-price-tag"
               :class="$style.colInput"
             />
           </div>
@@ -31,7 +31,8 @@
             <span :class="$style.colLabel">Số lượng</span>
             <el-input
               v-model="prod.quantity"
-              suffix-icon="el-icon-date"
+              placeholder="0"
+              suffix-icon="el-icon-shopping-cart-2"
               :class="$style.colInputNum"
             />
           </div>
@@ -41,64 +42,60 @@
         <el-col :span="15">
           <div :class="$style.column">
             <span :class="$style.colLabel">Mô tả</span>
-              <el-input
-                v-model="prod.description"
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 4}"
-                placeholder="Please input"
-                :class="$style.colInput"
-              />
+            <el-input
+              v-model="prod.description"
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4 }"
+              placeholder="Please input the description"
+              :class="$style.colInput"
+            />
           </div>
         </el-col>
       </el-row>
       <el-row type="flex" :class="$style.row" justify="center">
-        <el-button type="primary">Thêm vào danh sách</el-button>
+        <el-button type="primary" @click="onClickAdd"
+          >Thêm vào danh sách</el-button
+        >
       </el-row>
     </div>
     <!-- List -->
     <div :class="$style.screenList">
       <el-table
-        :data="prodsAdded.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+        :data="
+          prodsAdded.filter(
+            (data) =>
+              !search || data.name.toLowerCase().includes(search.toLowerCase())
+          )
+        "
         height="250"
         stripe
-        style="width: 100%">
-        <el-table-column
-          label="Tên sản phẩm"
-          prop="name">
-        </el-table-column>
-        <el-table-column
-          label="Số lượng"
-          prop="quantity">
-        </el-table-column>
-        <el-table-column
-          label="Đơn giá"
-          prop="price">
-        </el-table-column>
-        <el-table-column
-          label="Miêu tả"
-          prop="description">
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="Operations">
+        style="width: 100%"
+      >
+        <el-table-column label="Tên sản phẩm" prop="name"> </el-table-column>
+        <el-table-column label="Số lượng" prop="quantity"> </el-table-column>
+        <el-table-column label="Đơn giá" prop="price"> </el-table-column>
+        <el-table-column label="Miêu tả" prop="description"> </el-table-column>
+        <el-table-column fixed="right" label="Operations">
           <template slot-scope="scope">
             <el-button
               type="primary"
               icon="el-icon-edit"
               size="medium"
               circle
-              @click="handleEdit(scope.$index, scope.row)" />
+              @click="onEdit(scope.$index, scope.row)"
+            />
             <el-button
               type="danger"
               icon="el-icon-delete"
               size="medium"
               circle
-              @click="handleDelete(scope.$index, scope.row)" />
+              @click="onDelete(scope.$index)"
+            />
           </template>
         </el-table-column>
       </el-table>
       <el-row type="flex" :class="$style.btnAdd" justify="center">
-        <el-button type="primary">Thêm sản phẩm</el-button>
+        <el-button type="primary">Thêm tất cả sản phẩm</el-button>
       </el-row>
     </div>
   </div>
@@ -107,6 +104,12 @@
 <script>
 export default {
   name: 'AddProdComponent',
+  props: {
+    product: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
       prod: {
@@ -117,97 +120,46 @@ export default {
       },
       prodsAdded: [
         {
-          name: 'sp2',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 2',
-        },
-        {
-          name: 'sp3',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-        {
           name: 'sp4',
           price: 500000,
           quantity: '20',
           description: 'Mô tả sản phẩm 4',
         },
       ],
+      isEditProd: false,
+      indexEdit: -1,
     }
+  },
+  watch: {
+    product(newVal) {
+      console.log(newVal)
+      this.prod = newVal
+    }
+  },
+  methods: {
+    onClickAdd() {
+      // if (this.isEditProd) {
+      //   this.prodsAdded[this.indexEdit] = this.prod
+      // } else {
+      //   this.prodsAdded.push(this.prod)
+      // }
+      this.prodsAdded.push(this.prod)
+      this.prod =
+      {
+          name: '',
+          price: null,
+          quantity: null,
+          description: '',
+      }
+    },
+    onDelete(index) {
+      this.prodsAdded.splice(index, 1)
+    },
+    onEdit(index, row) {
+      this.isEditProd = true
+      this.prod = row
+      this.indexEdit = index
+    },
   },
 }
 </script>
