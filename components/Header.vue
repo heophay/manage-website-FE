@@ -4,7 +4,7 @@
       <span :class="$style.icon">
         <i class="el-icon-user" />
       </span>
-      <span> {{ user.name }}</span>
+      <span>{{ user.fullname }}</span>
     </div>
     <div>
       <el-button :class="$style.btnLogout" type="text">Đăng xuất</el-button>
@@ -17,10 +17,11 @@ export default {
   name: 'HeaderPage',
   data() {
     return {
-      user: {
-        name: 'Nguyễn Bá Rôn',
-      }
+      user: {}
     }
+  },
+  mounted() {
+    this.user = JSON.parse(localStorage.getItem('user'))
   },
 }
 </script>

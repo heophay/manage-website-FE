@@ -37,6 +37,7 @@ export default {
       headerTitle: 'Trang chủ',
       listAside: [],
       prod: null,
+      user: null,
     }
   },
   watch: {
@@ -47,6 +48,7 @@ export default {
   },
   mounted() {
     this.getInitData()
+    this.user = JSON.parse(localStorage.getItem('user'))
   },
   methods: {
     onChangeIndex(index) {

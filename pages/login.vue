@@ -28,7 +28,7 @@
             <span :class="$style.textForgotPw">Forgot your password?</span>
             <el-row>
               <!-- <el-button :class="$style.btnSignUp" round>Sign up</el-button> -->
-              <el-button :class="$style.btnSignIn" round>Sign in</el-button>
+              <el-button :class="$style.btnSignIn" @click="login" round>Sign in</el-button>
             </el-row>
           </div>
         </el-main>
@@ -46,12 +46,30 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'LoginPage',
   data() {
     return {
       username: '',
       password: '',
+    }
+  },
+  methods: {
+    login(){
+      const data = {
+        username: this.username,
+        password: this.password,
+      }
+      axios.post('http://localhost:3001/api/user/login', data)
+        .then((res) => {
+          const user = res.data.user
+          if (user) {
+            console.log('Log in success')
+          } else {
+            console.log('faild')
+          }
+        })
     }
   },
 }

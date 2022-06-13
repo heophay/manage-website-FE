@@ -30,7 +30,7 @@
         <div :class="$style.row">
           <span :class="$style.rowLabel">Tên khách hàng</span>
           <el-input
-            v-model="payment.customer"
+            v-model="payment.customer.name"
             placeholder="Pick a date"
             suffix-icon="el-icon-date"
             :class="[$style.rowInput, $style.rowCustomer]"
@@ -39,7 +39,7 @@
         <div :class="$style.row">
           <span :class="$style.rowLabel">Số điện thoại</span>
           <el-input
-            v-model="payment.phone_customer"
+            v-model="payment.customer.phone"
             placeholder="Pick a date"
             suffix-icon="el-icon-date"
             :class="[$style.rowInput, $style.rowCustomer]"
@@ -53,7 +53,7 @@
       <span :class="$style.labelPay">Sản phẩm</span>
       <div :class="$style.listProd">
         <el-row
-          v-for="(prod, index) in listProd"
+          v-for="(prod, index) in listProdBuy"
           :key="index"
           type="flex"
           :class="$style.rowProd"
@@ -62,12 +62,24 @@
           <el-col :span="8">
             <div :class="$style.colProd">
               <span :class="$style.colLabel">Sản phẩm {{ index + 1 }}</span>
-              <el-input
-                v-model="prod.name"
-                placeholder="Pick a date"
-                suffix-icon="el-icon-date"
-                :class="$style.colInput"
-              />
+              <el-select
+                v-model="value[index]"
+                filterable
+                remote
+                reserve-keyword
+                placeholder="Please enter a keyword"
+                :remote-method="remoteMethod"
+                :loading="loading"
+                @change="onChangeValue"
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
             </div>
           </el-col>
           <el-col :span="5" :offset="1">
@@ -97,7 +109,8 @@
             icon="el-icon-delete"
             size="medium"
             circle
-            @click="onDelete(prod)" />
+            @click="onDelete(prod)"
+          />
         </el-row>
       </div>
 
@@ -113,12 +126,13 @@
     </div>
 
     <el-row type="flex" :class="$style.rowPayment" justify="center">
-      <el-button type="primary">Thanh toán</el-button>
+      <el-button type="primary" @click="onPay">Thanh toán</el-button>
     </el-row>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'PaymentComponent',
   data() {
@@ -126,43 +140,83 @@ export default {
       payment: {
         id: '10',
         employee: 'Nguyễn Bá Huy',
-        customer: 'Huy Bá Nguyễn',
-        phone_customer: '13464854',
+        customer: {
+          name: 'Huy Bá Nguyễn',
+          phone: '13464854'
+        }
       },
-      listProd: [
-        {
-          name: 'sp1',
-          num: 5,
-          price: 500.0,
-        },
-        {
-          name: 'sp2',
-          num: 10,
-          price: 1500.0,
-        },
-      ],
+      listProdBuy:[],
+      allProducts: [],
+      productOptions: [],
+      value: [],
+      loading: false,
+      options: [],
     }
   },
   computed: {
     totalPrice() {
-      return this.listProd.reduce((accumulator, currentValue) => {
+      return this.listProdBuy.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.price * currentValue.num
       }, 0)
     },
   },
+  mounted() {
+    this.getProduct()
+  },
   methods: {
     onAddClick() {
-      this.listProd.push({
-        name: 'sp2',
-        num: 10,
-        price: 1500.0,
+      this.listProdBuy.push({
+        num: 0,
+        price: 0,
       })
+      this.value.push(null)
     },
     onDelete(prod) {
-      const index = this.listProd.indexOf(prod)
+      const index = this.listProdBuy.indexOf(prod)
       if (index !== -1) {
-        this.listProd.splice(index, 1)
+        this.listProdBuy.splice(index, 1)
       }
+    },
+    getProduct() {
+      axios.get('http://localhost:3001/api/product').then((res) => {
+        if (res.data) {
+          this.allProducts = res.data
+          this.productOptions = this.getProdOptions()
+        }
+      })
+    },
+    getProdOptions() {
+      return this.allProducts.map((e) => {
+        return { value: e._id, label: e.name }
+      })
+    },
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+          this.options = this.productOptions.filter((item) => {
+            return item.label.toLowerCase().includes(query.toLowerCase())
+          })
+        }, 200)
+      } else {
+        this.options =  this.productOptions
+      }
+    },
+    onChangeValue(value) {
+      const index = this.value.indexOf(value)
+      const temp = this.allProducts.find((e) => {
+        return e._id === value
+      })
+      this.listProdBuy[index]._id = temp._id
+      this.listProdBuy[index].price = temp.price
+    },
+    onPay() {
+      axios.post('http://localhost:3001/api/bill/create', {
+        products: this.listProdBuy,
+        payment: this.payment,
+        id_user: JSON.parse(localStorage.getItem('user'))._id
+      })
     }
   },
 }

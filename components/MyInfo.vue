@@ -8,7 +8,7 @@
             <div :class="$style.colInfo">
               <span :class="$style.colInfoLabel">Username</span>
               <el-input
-                v-model="infoUser.username"
+                v-model="user.username"
                 placeholder="Pick a date"
                 suffix-icon="el-icon-user-solid"
                 :disabled="true"
@@ -19,7 +19,7 @@
             <div :class="$style.colInfo">
               <span :class="$style.colInfoLabel">Fullname</span>
               <el-input
-                v-model="infoUser.fullName"
+                v-model="user.fullname"
                 placeholder="Pick a date"
                 suffix-icon="el-icon-s-custom"
               />
@@ -31,7 +31,7 @@
             <div :class="$style.colInfo">
               <span :class="$style.colInfoLabel">Email</span>
               <el-input
-                v-model="infoUser.email"
+                v-model="user.email"
                 placeholder="Pick a date"
                 suffix-icon="el-icon-office-building"
               />
@@ -41,7 +41,7 @@
             <div :class="$style.colInfo">
               <span :class="$style.colInfoLabel">Phone</span>
               <el-input
-                v-model="infoUser.phone"
+                v-model="user.phone"
                 placeholder="Pick a date"
                 suffix-icon="el-icon-phone"
               />
@@ -49,7 +49,7 @@
           </el-col>
         </el-row>
         <span>
-          <el-button type="primary">Thay đổi thông tin</el-button>
+          <el-button type="primary" @click="onChangeInfo">Thay đổi thông tin</el-button>
         </span>
       </div>
       <!-- Password -->
@@ -59,7 +59,7 @@
             <div :class="$style.colPass">
               <span :class="$style.colPassLabel">Password</span>
               <el-input
-                v-model="infoUser.password"
+                v-model="user.password"
                 placeholder="Pick a date"
                 :class="$style.colInforInput"
                 show-password
@@ -72,7 +72,7 @@
             <div :class="$style.colPass">
               <span :class="$style.colPassLabel">Confirm Password</span>
               <el-input
-                v-model="infoUser.password"
+                v-model="user.password"
                 placeholder="Pick a date"
                 :class="$style.colInforInput"
                 show-password
@@ -89,19 +89,40 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'HomeWebsite',
   data() {
     return {
       text: 'Đây là trang chủ!!',
-      infoUser: {
-        username: 'heophay',
-        fullName: 'Nguyễn Bá Huy',
-        phone: '123123132',
-        email: 'heophay@pd.ai',
-        password: '123456',
-      },
+      user: {},
     }
+  },
+  mounted() {
+    this.user = JSON.parse(localStorage.getItem('user'))
+  },
+  methods: {
+    onChangeInfo() {
+      const info = {
+        password: this.user.password,
+        fullname: this.user.fullname,
+        phone: this.user.phone,
+        email: this.user.email,
+      }
+      axios.put('http://localhost:3001/api/user/' + this.user._id, info)
+      this.getUser()
+    },
+    getUser(){
+      axios.get('http://localhost:3001/api/user/' + this.user._id)
+        .then((res) => {
+          const user = res.data.user
+          if (user) {
+            localStorage.setItem('user', JSON.stringify(user))
+          } else {
+            console.log('faild')
+          }
+        })
+    },
   },
 }
 </script>

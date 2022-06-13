@@ -1,14 +1,10 @@
 <template>
   <div :class="$style.screen">
     <el-table
-      :data="prods.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+      :data="products.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
       height="526"
       stripe
       style="width: 100%">
-      <el-table-column
-        label="Mã sp"
-        prop="id">
-      </el-table-column>
       <el-table-column
         label="Tên sản phẩm"
         prop="name">
@@ -19,7 +15,7 @@
       </el-table-column>
       <el-table-column
         label="Đơn giá"
-        prop="prices">
+        prop="price">
       </el-table-column>
       <el-table-column
         label="Miêu tả"
@@ -35,7 +31,7 @@
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+            @click="onDeleteItem(scope.$index, scope.row)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -43,131 +39,35 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'ListProd',
   data() {
     return {
-      prods: [
-        {
-          id: 1,
-          name: 'sp1',
-          quantity: '20',
-          prices: 500000,
-          description: 'Mô tả sản phẩm 1',
-        },
-        {
-          id: 2,
-          name: 'sp2',
-          quantity: '25',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 2',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-        {
-          id: 3,
-          name: 'sp3',
-          quantity: '35',
-          prices: 1500000,
-          description: 'Mô tả sản phẩm 3',
-        },
-      ],
+      products: [],
       search: '',
     }
+  },
+  mounted() {
+    this.getProductList()
   },
   methods: {
     onEdit(index, row) {
       this.$emit('product', row)
       this.$emit('index-component', '4-2')
+    },
+    getProductList() {
+      axios.get('http://localhost:3001/api/product')
+      .then((res) => {
+        console.log(res)
+        if (res.data) {
+          this.products = res.data
+        }
+      })
+    },
+    onDeleteItem(index, value) {
+      this.products.splice(index, 1)
+      axios.delete('http://localhost:3001/api/product/' + value._id)
     }
   },
 }

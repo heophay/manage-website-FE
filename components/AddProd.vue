@@ -95,13 +95,14 @@
         </el-table-column>
       </el-table>
       <el-row type="flex" :class="$style.btnAdd" justify="center">
-        <el-button type="primary">Thêm tất cả sản phẩm</el-button>
+        <el-button type="primary" @click="onAddProds">Thêm tất cả sản phẩm</el-button>
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'AddProdComponent',
   props: {
@@ -112,45 +113,24 @@ export default {
   },
   data() {
     return {
-      prod: {
-        name: 'San pham 1',
-        price: 200000,
-        quantity: 50,
-        description: 'Đây là mô tả của sản phẩm 1',
-      },
-      prodsAdded: [
-        {
-          name: 'sp4',
-          price: 500000,
-          quantity: '20',
-          description: 'Mô tả sản phẩm 4',
-        },
-      ],
+      prod: {},
+      prodsAdded: [],
       isEditProd: false,
       indexEdit: -1,
     }
   },
   watch: {
     product(newVal) {
-      console.log(newVal)
       this.prod = newVal
     }
   },
+  mounted() {
+    this.resetProd()
+  },
   methods: {
     onClickAdd() {
-      // if (this.isEditProd) {
-      //   this.prodsAdded[this.indexEdit] = this.prod
-      // } else {
-      //   this.prodsAdded.push(this.prod)
-      // }
       this.prodsAdded.push(this.prod)
-      this.prod =
-      {
-          name: '',
-          price: null,
-          quantity: null,
-          description: '',
-      }
+      this.resetProd()
     },
     onDelete(index) {
       this.prodsAdded.splice(index, 1)
@@ -160,6 +140,18 @@ export default {
       this.prod = row
       this.indexEdit = index
     },
+    resetProd() {
+      this.prod = {
+        name: '',
+        price: null,
+        quantity: null,
+        description: '',
+      }
+    },
+    onAddProds() {
+      axios.post('http://localhost:3001/api/product/create', this.prodsAdded)
+      this.prodsAdded = []
+    }
   },
 }
 </script>
