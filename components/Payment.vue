@@ -86,7 +86,7 @@
             <div :class="$style.colProd">
               <span :class="$style.colLabel">Số lượng</span>
               <el-input
-                v-model="prod.num"
+                v-model="prod.quantity"
                 placeholder="Pick a date"
                 suffix-icon="el-icon-date"
                 :class="[$style.colInput, $style.colQuantity]"
@@ -151,12 +151,13 @@ export default {
       value: [],
       loading: false,
       options: [],
+      id_user: JSON.parse(localStorage.getItem('user'))._id,
     }
   },
   computed: {
     totalPrice() {
       return this.listProdBuy.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue.price * currentValue.num
+        return accumulator + currentValue.price * currentValue.quantity
       }, 0)
     },
   },
@@ -166,7 +167,7 @@ export default {
   methods: {
     onAddClick() {
       this.listProdBuy.push({
-        num: 0,
+        quantity: 0,
         price: 0,
       })
       this.value.push(null)
@@ -211,11 +212,23 @@ export default {
       this.listProdBuy[index]._id = temp._id
       this.listProdBuy[index].price = temp.price
     },
-    onPay() {
-      axios.post('http://localhost:3001/api/bill/create', {
-        products: this.listProdBuy,
-        payment: this.payment,
-        id_user: JSON.parse(localStorage.getItem('user'))._id
+    async onPay() {
+      const newCustomer = await axios.post('http://localhost:3001/api/customer/create',this.payment.customer)
+      const bill = {
+        total: this.totalPrice,
+        id_user: this.id_user,
+        id_customer: newCustomer.data.customer._id
+      }
+      const newBill = await axios.post('http://localhost:3001/api/bill/create', bill)
+      await axios.post('http://localhost:3001/api/payitem/create', this.getPayitemDB(newBill.data.bill._id))
+    },
+    getPayitemDB(idBill) {
+      return this.listProdBuy.map(function(e) {
+        return {
+          id_bill: idBill,
+          id_product: e._id,
+          quantity: e.quantity,
+        }
       })
     }
   },
