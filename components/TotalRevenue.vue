@@ -44,17 +44,16 @@
     <!-- Table -->
     <div :class="$style.listBills">
       <el-table
-      :data="bills.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-      height="314"
+      :data="bills"
       stripe
       style="width: 100%">
       <el-table-column
         label="Mã hóa đơn"
-        prop="id">
+        prop="_id">
       </el-table-column>
       <el-table-column
         label="Tổng số tiền"
-        prop="total_prices">
+        prop="total">
       </el-table-column>
       <el-table-column
         label="Ngày thanh toán"
@@ -62,7 +61,11 @@
       </el-table-column>
       <el-table-column
         label="Khách hàng"
-        prop="employee">
+        prop="customer">
+      </el-table-column>
+      <el-table-column
+        label="Tổng sản phẩm"
+        prop="total_product">
       </el-table-column>
       <el-table-column
       fixed="right"
@@ -98,6 +101,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -107,117 +111,15 @@ export default {
         month: null,
         year: null,
       },
-      bills: [
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-      ],
+      bills: [],
+      payitems: [],
+      customers: [],
     }
+  },
+  mounted() {
+    this.getBills()
+    this.getPayitem()
+    this.getCustomer()
   },
   methods: {
     getDays() {
@@ -249,7 +151,40 @@ export default {
         })
       }
       return years
-    }
+    },
+    getBills() {
+      axios.get('http://localhost:3001/api/bill').then((res) => {
+        this.bills = res.data.bills
+        this.bills.forEach(function(e) {
+          e.employee = JSON.parse(localStorage.getItem('user')).fullname
+        })
+      })
+    },
+    getPayitem() {
+      const self = this
+      axios.get('http://localhost:3001/api/payitem').then((res) => {
+        self.payitems = res.data.payitems
+        self.bills.forEach(function(bill) {
+          const total = self.payitems.reduce(function(num, payitem) {
+            return payitem.id_bill === bill._id ? num + 1 : num
+          }, 0)
+          bill.total_product = total
+        })
+      })
+    },
+    getCustomer() {
+      const self = this
+      axios.get('http://localhost:3001/api/customer').then((res) => {
+        self.customers = res.data.customers
+        self.bills.forEach(function(bill) {
+          const tempCus = self.customers.find(function(customer) {
+            return customer._id === bill.id_customer
+          })
+          bill.customer = tempCus.name
+        })
+        console.log(JSON.stringify(self.bills))
+      })
+    },
   },
 }
 </script>
@@ -281,7 +216,7 @@ export default {
   .listBills {
     margin: 30px 0;
     border: 1px solid #9d9a9a;
-    width: 80%;
+    width: 85%;
     border-radius: 8px;
     overflow: hidden;
   }

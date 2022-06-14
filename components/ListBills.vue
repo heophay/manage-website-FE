@@ -1,17 +1,17 @@
 <template>
   <div :class="$style.screen">
     <el-table
-      :data="bills.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-      height="500"
+      :data="bills"
+      height="400"
       stripe
       style="width: 100%">
       <el-table-column
         label="Mã hóa đơn"
-        prop="id">
+        prop="_id">
       </el-table-column>
       <el-table-column
         label="Tổng số tiền"
-        prop="total_prices">
+        prop="total">
       </el-table-column>
       <el-table-column
         label="Ngày thanh toán"
@@ -36,123 +36,26 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'ListBills',
   data() {
     return {
-      bills: [
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-        {
-          id: 1,
-          total_prices: 150000000,
-          datetime: '26/5/2022',
-          employee: 'NGuyễn Bá Rôn',
-        },
-      ],
-      search:'',
-
+      bills: [],
     }
+  },
+  mounted() {
+    this.getBills()
+  },
+  methods: {
+    getBills() {
+      axios.get('http://localhost:3001/api/bill').then((res) => {
+        this.bills = res.data.bills
+        this.bills.forEach(function(e) {
+          e.employee = JSON.parse(localStorage.getItem('user')).fullname
+        })
+      })
+    },
   },
 }
 </script>
