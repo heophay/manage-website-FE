@@ -22,13 +22,17 @@
             <add-prod v-if="indexComponent === '4-2'" :product="prod" />
             <list-bills v-if="indexComponent === '5-1'" />
             <total-revenue v-if="indexComponent === '5-2'" />
+            <list-employee v-if="indexComponent === '6-1'" />
+            <manage-employee v-if="indexComponent === '6-2'" />
           </div>
         </el-main>
     </el-container>
 </template>
 
 <script>
+import ManageEmployee from '~/components/ManageEmployee.vue'
 export default {
+  components: { ManageEmployee },
   name: 'HomeUser',
   layout: 'MainLayout',
   data() {
