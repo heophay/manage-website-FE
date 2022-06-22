@@ -25,7 +25,9 @@
               prefix-icon="el-icon-lock"
             >
             </el-input>
-            <span :class="$style.textForgotPw">Forgot your password?</span>
+            <span v-if="!statusLogin" :class="$style.textStatusLogin">
+              The username or password is incorrect. Please try again!
+            </span>
             <el-row>
               <!-- <el-button :class="$style.btnSignUp" round>Sign up</el-button> -->
               <el-button :class="$style.btnSignIn" round @click="login">Sign in</el-button>
@@ -53,6 +55,7 @@ export default {
     return {
       username: '',
       password: '',
+      statusLogin: true,
     }
   },
   mounted() {
@@ -60,6 +63,7 @@ export default {
   },
   methods: {
     login(){
+      this.statusLogin = true
       const data = {
         username: this.username,
         password: this.password,
@@ -71,7 +75,7 @@ export default {
             localStorage.setItem('user', JSON.stringify(user))
             this.$router.push('/home/' + user._id)
           } else {
-            console.log('faild')
+            this.statusLogin = false
           }
         })
     },
@@ -119,13 +123,14 @@ export default {
       .btnSignIn {
         background-color: var(--color-primary);
         color: #fff;
+        margin-top: 20px;
       }
-      .textForgotPw {
+      .textStatusLogin {
         font-size: 14px;
         font-weight: 400;
         line-height: 20px;
         margin-top: 20px;
-        margin-bottom: 20px;
+        color: red;
       }
     }
     .contentAside {
