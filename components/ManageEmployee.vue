@@ -83,19 +83,20 @@ export default {
       confirmPassword: '',
     }
   },
-  // mounted() {
-  //   this.getUser()
-  // },
   methods: {
     getUser() {
       this.user = JSON.parse(localStorage.getItem('user'))
     },
     onClickAdd() {
       axios.post('http://localhost:3001/api/user/create', this.user)
-      .then((res) => {
-        console.log(JSON.stringify(this.user))
+        .then((res) => {
+          this.$notify({
+          title: 'Add Employee',
+          message: 'Successfully added employees',
+          position: 'bottom-right',
+          type: 'success',
+        });
       })
-      console.log(JSON.stringify(this.user))
     }
   },
 }

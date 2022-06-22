@@ -32,7 +32,7 @@
               <span :class="$style.colInfoLabel">Email</span>
               <el-input
                 v-model="user.email"
-                placeholder="Pick a date"
+                placeholder="Type your email"
                 suffix-icon="el-icon-office-building"
               />
             </div>
@@ -42,7 +42,7 @@
               <span :class="$style.colInfoLabel">Phone</span>
               <el-input
                 v-model="user.phone"
-                placeholder="Pick a date"
+                placeholder="Type your phone number"
                 suffix-icon="el-icon-phone"
               />
             </div>

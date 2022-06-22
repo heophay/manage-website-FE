@@ -20,6 +20,7 @@
     "*.**": "prettier --check --ignore-unknown"
   },
   "dependencies": {
+    "@nuxtjs/toast": "^3.3.1",
     "core-js": "^3.19.3",
     "element-ui": "^2.15.6",
     "nuxt": "^2.15.8",

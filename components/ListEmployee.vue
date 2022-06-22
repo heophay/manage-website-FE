@@ -2,7 +2,7 @@
   <div :class="$style.screen">
     <el-table
       :data="customers"
-      height="400"
+      height="560"
       stripe
       style="width: 100%">
       <el-table-column

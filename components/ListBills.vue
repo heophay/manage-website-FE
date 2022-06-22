@@ -1,8 +1,8 @@
 <template>
-  <div :class="$style.screen">
+  <div :class="$style.listBill">
     <el-table
       :data="bills"
-      height="400"
+      height="800px"
       stripe
       style="width: 100%">
       <el-table-column
@@ -61,7 +61,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-.screen {
+.listBill {
   padding: 20px 40px;
 }
 </style>

@@ -57,7 +57,6 @@ export default {
   },
   mounted() {
     if (this.checkLocalStorage()) this.$router.push('/home/' + this.checkLocalStorage())
-    else console.log('chua')
   },
   methods: {
     login(){
@@ -78,7 +77,7 @@ export default {
     },
     checkLocalStorage() {
       const user = localStorage.getItem('user')
-      if (user) return user
+      if (user) return user._id
       return null
     },
   },

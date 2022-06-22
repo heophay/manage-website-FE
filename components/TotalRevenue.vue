@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.screen">
+  <div :class="$style.totalRevenue">
     <!-- Input -->
     <div :class="$style.screenInput">
       <span>Thống kê theo</span>
@@ -190,7 +190,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-.screen {
+.totalRevenue {
   padding: 20px;
   flex-direction: column;
   display: flex;
@@ -210,6 +210,7 @@ export default {
     :global {
       .el-select {
         width: 80px;
+        margin-right: -10px;
       }
     }
   }

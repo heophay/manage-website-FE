@@ -7,7 +7,7 @@
       <span>{{ user.fullname }}</span>
     </div>
     <div>
-      <el-button :class="$style.btnLogout" type="text">Đăng xuất</el-button>
+      <el-button :class="$style.btnLogout" type="text" @click="logOut">Đăng xuất</el-button>
     </div>
   </div>
 </template>
@@ -22,6 +22,15 @@ export default {
   },
   mounted() {
     this.user = JSON.parse(localStorage.getItem('user'))
+  },
+  methods: {
+    logOut() {
+      console.log(this.$route)
+      this.$router.back()
+    },
+    getFullname() {
+      if (this.user) return  this.user.fullname
+    }
   },
 }
 </script>

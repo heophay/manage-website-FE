@@ -39,7 +39,7 @@
           <el-menu-item index="5-2">Thống kê</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="6">
+      <el-submenu v-if="isAdmin" index="6">
         <template slot="title">
           <i class="el-icon-user-solid"></i>
           <span>Nhân viên</span>
@@ -64,6 +64,14 @@ export default {
       }
     },
   },
+  data() {
+    return {
+      isAdmin: false,
+    }
+  },
+  mounted() {
+    this.isAdmin = JSON.parse(localStorage.getItem('user')).isAdmin
+  },
   methods: {
     onChangeIndex(index) {
       this.$emit('index-component', index)
@@ -81,6 +89,11 @@ export default {
   :global{
     .el-menu-item.is-active {
       background-color: #075081 !important;
+    }
+    .el-menu-item {
+      &:hover{
+        color: #fff !important;
+      }
     }
   }
 

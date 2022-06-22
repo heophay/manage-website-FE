@@ -8,7 +8,7 @@
       </el-aside>
         <el-main>
           <div :class="$style.mainScreen">
-            <el-row :class="$style.rowTitle">
+            <el-row v-if="indexComponent !== '1'" :class="$style.rowTitle">
               <el-col :span="24">
                 <div :class="$style.headerTitle">
                   <span>{{ headerTitle }}</span>
