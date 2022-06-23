@@ -53,13 +53,13 @@
         </el-col>
       </el-row>
       <el-row type="flex" :class="$style.row" justify="center">
-        <el-button type="primary" @click="onClickAdd"
-          >Thêm vào danh sách</el-button
-        >
+        <el-button type="primary" @click="onClickButton">
+          {{ getTextButton }}
+        </el-button>
       </el-row>
     </div>
     <!-- List -->
-    <div :class="$style.screenList">
+    <div v-if="!isEditProd" :class="$style.screenList">
       <el-table
         :data="
           prodsAdded.filter(
@@ -98,6 +98,13 @@
         <el-button type="primary" @click="onAddProds">Thêm tất cả sản phẩm</el-button>
       </el-row>
     </div>
+    <toast-notification
+      :type="toast.type"
+      :text="toast.text"
+      :show-toast="toast.isShow"
+      @close="closeToast"
+    >
+    </toast-notification>
   </div>
 </template>
 
@@ -116,21 +123,37 @@ export default {
       prod: {},
       prodsAdded: [],
       isEditProd: false,
-      indexEdit: -1,
+      toast: {}
     }
   },
-  watch: {
-    product(newVal) {
-      this.prod = newVal
+  computed: {
+    getTextButton() {
+      return this.isEditProd ? 'Edit Product' : 'Add Product'
     }
   },
   mounted() {
-    this.resetProd()
+    this.getProduct()
+  },
+  destroyed() {
+    this.$emit('reset-edit-product')
   },
   methods: {
-    onClickAdd() {
-      this.prodsAdded.push(this.prod)
-      this.resetProd()
+    getProduct() {
+      if (this.product) {
+        this.prod = Object.assign({}, this.product)
+        this.isEditProd = true
+      } else {
+        this.resetProd()
+      }
+    },
+    onClickButton() {
+      if (this.isEditProd) {
+        this.onUpdateProd()
+      } else {
+        this.prodsAdded.push(this.prod)
+        this.resetProd()
+      }
+
     },
     onDelete(index) {
       this.prodsAdded.splice(index, 1)
@@ -148,9 +171,25 @@ export default {
         description: '',
       }
     },
+    onUpdateProd() {
+      axios.put('http://localhost:3001/api/product/' + this.prod._id, this.prod)
+        .then((res) => {
+          if (res) this.showToast('success', 'Update Success!!', true)
+        })
+    },
     onAddProds() {
       axios.post('http://localhost:3001/api/product/create', this.prodsAdded)
       this.prodsAdded = []
+    },
+    showToast(type, text, isShow) {
+      this.toast = {
+        type,
+        text,
+        isShow
+      }
+    },
+    closeToast() {
+      this.toast.isShow = false
     }
   },
 }
@@ -162,12 +201,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: calc(100% - 75px);
+  position: relative;
 
   .screenAdd {
     border: 2px solid var(--color-primary);
     width: 64%;
     padding: 20px 0;
     border-radius: 30px;
+    margin: auto;
 
     .row {
       .column {

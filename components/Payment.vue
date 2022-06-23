@@ -5,21 +5,19 @@
       <div :class="$style.screenMainInfoItem">
         <span :class="$style.labelItem">Đơn hàng</span>
         <div :class="$style.row">
-          <span :class="$style.rowLabel">Đơn số</span>
+          <span :class="$style.rowLabel">Nhân viên</span>
           <el-input
-            v-model="payment.id"
-            placeholder="Pick a date"
-            suffix-icon="el-icon-date"
+            v-model="user.fullname"
+            suffix-icon="el-icon-user-solid"
             :class="$style.rowInput"
             :disabled="true"
           />
         </div>
         <div :class="$style.row">
-          <span :class="$style.rowLabel">Nhân viên</span>
+          <span :class="$style.rowLabel">Phone</span>
           <el-input
-            v-model="payment.employee"
-            placeholder="Pick a date"
-            suffix-icon="el-icon-date"
+            v-model="user.phone"
+            suffix-icon="el-icon-phone"
             :class="$style.rowInput"
             :disabled="true"
           />
@@ -30,18 +28,18 @@
         <div :class="$style.row">
           <span :class="$style.rowLabel">Tên khách hàng</span>
           <el-input
-            v-model="payment.customer.name"
-            placeholder="Pick a date"
-            suffix-icon="el-icon-date"
+            v-model="customer.name"
+            placeholder="Type customer's name"
+            suffix-icon="el-icon-user-solid"
             :class="[$style.rowInput, $style.rowCustomer]"
           />
         </div>
         <div :class="$style.row">
           <span :class="$style.rowLabel">Số điện thoại</span>
           <el-input
-            v-model="payment.customer.phone"
-            placeholder="Pick a date"
-            suffix-icon="el-icon-date"
+            v-model="customer.phone"
+            placeholder="Type customer's phone number"
+            suffix-icon="el-icon-phone"
             :class="[$style.rowInput, $style.rowCustomer]"
           />
         </div>
@@ -137,13 +135,9 @@ export default {
   name: 'PaymentComponent',
   data() {
     return {
-      payment: {
-        id: '10',
-        employee: 'Nguyễn Bá Huy',
-        customer: {
-          name: 'Huy Bá Nguyễn',
-          phone: '13464854'
-        }
+      customer: {
+        name: '',
+        phone: '',
       },
       listProdBuy:[],
       allProducts: [],
@@ -151,7 +145,7 @@ export default {
       value: [],
       loading: false,
       options: [],
-      id_user: JSON.parse(localStorage.getItem('user'))._id,
+      user: {},
     }
   },
   computed: {
@@ -163,20 +157,12 @@ export default {
   },
   mounted() {
     this.getProduct()
+    this.getUser()
+    this.onAddClick()
   },
   methods: {
-    onAddClick() {
-      this.listProdBuy.push({
-        quantity: 0,
-        price: 0,
-      })
-      this.value.push(null)
-    },
-    onDelete(prod) {
-      const index = this.listProdBuy.indexOf(prod)
-      if (index !== -1) {
-        this.listProdBuy.splice(index, 1)
-      }
+    getUser() {
+      this.user = JSON.parse(localStorage.getItem('user'))
     },
     getProduct() {
       axios.get('http://localhost:3001/api/product').then((res) => {
@@ -190,6 +176,19 @@ export default {
       return this.allProducts.map((e) => {
         return { value: e._id, label: e.name }
       })
+    },
+    onAddClick() {
+      this.listProdBuy.push({
+        quantity: 0,
+        price: 0,
+      })
+      this.value.push(null)
+    },
+    onDelete(prod) {
+      const index = this.listProdBuy.indexOf(prod)
+      if (index !== -1) {
+        this.listProdBuy.splice(index, 1)
+      }
     },
     remoteMethod(query) {
       if (query !== '') {

@@ -61,7 +61,6 @@
               <el-input
                 v-model="user.password"
                 placeholder="Pick a date"
-                :class="$style.colInforInput"
                 show-password
               />
             </div>
@@ -71,20 +70,31 @@
           <el-col :span="20">
             <div :class="$style.colPass">
               <span :class="$style.colPassLabel">Confirm Password</span>
-              <el-input
-                v-model="user.password"
-                placeholder="Pick a date"
-                :class="$style.colInforInput"
-                show-password
-              />
+              <div :class="$style.inputConfirm">
+                <el-input
+                  v-model="passwordConfirm"
+                  placeholder="Pick a date"
+                  show-password
+                />
+                <span v-if="!isValid" :class="$style.statusConfirmPW">Password confirm is incorrect!!</span>
+              </div>
             </div>
           </el-col>
         </el-row>
         <el-row type="flex" :class="$style.rowInfo" justify="center">
-          <el-button type="primary">Thay đổi password</el-button>
+          <el-button type="primary" :disabled="!isValid" @click="onChangeInfo">
+            Thay đổi password
+          </el-button>
         </el-row>
       </div>
     </div>
+    <toast-notification
+      :type="toast.type"
+      :text="toast.text"
+      :show-toast="toast.isShow"
+      @close="closeToast"
+    >
+    </toast-notification>
   </div>
 </template>
 
@@ -94,8 +104,18 @@ export default {
   name: 'HomeWebsite',
   data() {
     return {
-      text: 'Đây là trang chủ!!',
       user: {},
+      toast: {
+        isShow: false,
+        text: '',
+        type: '',
+      },
+      passwordConfirm: '',
+    }
+  },
+  computed: {
+    isValid() {
+      return this.passwordConfirm === this.user.password
     }
   },
   mounted() {
@@ -104,13 +124,23 @@ export default {
   methods: {
     onChangeInfo() {
       const info = {
-        password: this.user.password,
         fullname: this.user.fullname,
         phone: this.user.phone,
         email: this.user.email,
       }
       axios.put('http://localhost:3001/api/user/' + this.user._id, info)
+        .then((res) => {
+          this.changeToast('success','Change success!!', true)
+        })
       this.getUser()
+    },
+    changeToast(type, text, isShow) {
+      this.toast.type = type
+      this.toast.text = text
+      this.toast.isShow = isShow
+    },
+    closeToast() {
+      this.toast.isShow = false
     },
     getUser(){
       axios.get('http://localhost:3001/api/user/' + this.user._id)
@@ -133,6 +163,7 @@ export default {
   align-items: center;
   height: calc(100% - 75px);
   width: 100%;
+  position: relative;
   .infoScreen {
     padding: 30px 20px;
     display: flex;
@@ -182,6 +213,16 @@ export default {
           margin-bottom: 16px;
           .colPassLabel {
             width: 300px;
+          }
+          .inputConfirm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            .statusConfirmPW {
+              color: red;
+              margin-top: 8px;
+            }
           }
         }
       }

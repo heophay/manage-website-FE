@@ -46,7 +46,8 @@
       <el-table
       :data="bills"
       stripe
-      style="width: 100%">
+      style="width: 100%"
+      height="330px">
       <el-table-column
         label="Mã hóa đơn"
         prop="_id">
@@ -215,7 +216,7 @@ export default {
     }
   }
   .listBills {
-    margin: 30px 0;
+    margin: 20px 0;
     border: 1px solid #9d9a9a;
     width: 85%;
     border-radius: 8px;

@@ -2,7 +2,7 @@
   <div :class="$style.aside">
     <el-menu
       class="el-menu-vertical-demo"
-      default-active="1"
+      :default-active="index"
       background-color="#137dc4"
       text-color="#aba8a8"
       active-text-color="#fff"
@@ -63,6 +63,10 @@ export default {
         return []
       }
     },
+    index: {
+      type: String,
+      default: '1',
+    }
   },
   data() {
     return {

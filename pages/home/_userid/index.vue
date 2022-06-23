@@ -3,6 +3,7 @@
       <el-aside width="15vw">
         <Aside
           :list-aside="listAside"
+          :index="indexComponent"
           @index-component="onChangeIndex"
         />
       </el-aside>
@@ -19,7 +20,7 @@
             <my-info v-if="indexComponent === '2'" />
             <payment v-if="indexComponent === '3'" />
             <list-prod v-if="indexComponent === '4-1'" @index-component="onChangeIndex" @product="getProd" />
-            <add-prod v-if="indexComponent === '4-2'" :product="prod" />
+            <add-prod v-if="indexComponent === '4-2'" :product="editProduct" @reset-edit-product="onResetProduct" />
             <list-bills v-if="indexComponent === '5-1'" />
             <total-revenue v-if="indexComponent === '5-2'" />
             <list-employee v-if="indexComponent === '6-1'" />
@@ -40,7 +41,7 @@ export default {
       indexComponent: '1',
       headerTitle: 'Trang chủ',
       listAside: [],
-      prod: null,
+      editProduct: null,
       user: null,
     }
   },
@@ -59,7 +60,7 @@ export default {
       this.indexComponent = index
     },
     getProd(val) {
-      this.prod = val
+      this.editProduct = val
     },
     getInitData() {
       this.listAside = [
@@ -100,6 +101,9 @@ export default {
           title: 'Thêm sửa nhân viên',
         },
       ]
+    },
+    onResetProduct() {
+      this.editProduct = null
     }
   },
 }

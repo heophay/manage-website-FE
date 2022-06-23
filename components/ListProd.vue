@@ -5,33 +5,29 @@
       height="526"
       stripe
       style="width: 100%">
-      <el-table-column
-        label="Tên sản phẩm"
-        prop="name">
+      <el-table-column label="Tên sản phẩm" prop="name">
       </el-table-column>
-      <el-table-column
-        label="Số lượng"
-        prop="quantity">
+      <el-table-column label="Số lượng" prop="quantity">
       </el-table-column>
-      <el-table-column
-        label="Đơn giá"
-        prop="price">
+      <el-table-column label="Đơn giá" prop="price">
       </el-table-column>
-      <el-table-column
-        label="Miêu tả"
-        prop="description">
+      <el-table-column label="Miêu tả" prop="description">
       </el-table-column>
-      <el-table-column
-      fixed="right"
-      label="Operations">
+      <el-table-column fixed="right" label="Operations">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="onEdit(scope.$index, scope.row)">Edit</el-button>
+            @click="onEdit(scope.$index, scope.row)"
+          >
+            Edit
+          </el-button>
           <el-button
             size="mini"
             type="danger"
-            @click="onDeleteItem(scope.$index, scope.row)">Delete</el-button>
+            @click="onDeleteItem(scope.$index, scope.row)"
+          >
+            Delete
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -59,7 +55,6 @@ export default {
     getProductList() {
       axios.get('http://localhost:3001/api/product')
       .then((res) => {
-        console.log(res)
         if (res.data) {
           this.products = res.data
         }
