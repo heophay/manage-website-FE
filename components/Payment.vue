@@ -99,6 +99,7 @@
                 placeholder="Pick a date"
                 suffix-icon="el-icon-date"
                 :class="$style.colInput"
+                disabled
               />
             </div>
           </el-col>
@@ -163,6 +164,7 @@ export default {
   methods: {
     getUser() {
       this.user = JSON.parse(localStorage.getItem('user'))
+      console.log(this.user)
     },
     getProduct() {
       axios.get('http://localhost:3001/api/product').then((res) => {
@@ -211,15 +213,26 @@ export default {
       this.listProdBuy[index]._id = temp._id
       this.listProdBuy[index].price = temp.price
     },
-    async onPay() {
-      const newCustomer = await axios.post('http://localhost:3001/api/customer/create',this.payment.customer)
-      const bill = {
-        total: this.totalPrice,
-        id_user: this.id_user,
-        id_customer: newCustomer.data.customer._id
-      }
-      const newBill = await axios.post('http://localhost:3001/api/bill/create', bill)
-      await axios.post('http://localhost:3001/api/payitem/create', this.getPayitemDB(newBill.data.bill._id))
+    onPay() {
+      axios.post('http://localhost:3001/api/customer/create',this.customer)
+        .then((res) => {
+          const newCustomer = res.data.customer
+          const bill = {
+            total: this.totalPrice,
+            id_user: this.user._id,
+            id_customer: newCustomer._id
+          }
+          axios.post('http://localhost:3001/api/bill/create', bill)
+            .then((res) => {
+              const newBill = res.data.bill
+              console.log(JSON.stringify(newBill))
+              axios.post('http://localhost:3001/api/payitem/create', this.getPayitemDB(newBill._id))
+                .then((res) => {
+                  console.log(JSON.stringify(res))
+                })
+            })
+        })
+
     },
     getPayitemDB(idBill) {
       return this.listProdBuy.map(function(e) {

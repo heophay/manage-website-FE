@@ -6,7 +6,7 @@
           <div :class="$style.infoItem">
             <span :class="$style.infoText">Full Name</span>
             <el-input
-              v-model="user.fullname"
+              v-model="manageUser.fullname"
               placeholder="Type name"
               suffix-icon="el-icon-price-tag"
               :class="$style.infoInput"
@@ -15,7 +15,7 @@
           <div :class="$style.infoItem">
             <span :class="$style.infoText">Phone</span>
             <el-input
-              v-model="user.phone"
+              v-model="manageUser.phone"
               placeholder="Type phone"
               suffix-icon="el-icon-price-tag"
               :class="$style.infoInput"
@@ -24,32 +24,33 @@
           <div :class="$style.infoItem">
             <span :class="$style.infoText">Email</span>
             <el-input
-              v-model="user.email"
+              v-model="manageUser.email"
               placeholder="Type email"
               suffix-icon="el-icon-price-tag"
               :class="$style.infoInput"
             />
           </div>
-          <el-checkbox v-model="user.isAdmin" :class="$style.infoCheck"
-            >is Admin</el-checkbox
-          >
+          <el-checkbox v-model="manageUser.isAdmin" :class="$style.infoCheck">
+            is Admin
+          </el-checkbox>
         </div>
         <div :class="$style.userSection">
           <div :class="$style.userItem">
             <span :class="$style.userText">Username</span>
             <el-input
-              v-model="user.username"
+              v-model="manageUser.username"
               placeholder="Type Username"
               suffix-icon="el-icon-price-tag"
+              disabled
               :class="$style.userInput"
             />
           </div>
           <div :class="$style.userItem">
             <span :class="$style.userText">Password</span>
             <el-input
-              v-model="user.password"
-              placeholder="Type Username"
-              suffix-icon="el-icon-price-tag"
+              v-model="manageUser.password"
+              placeholder="Type Password"
+              show-password
               :class="$style.userInput"
             />
           </div>
@@ -57,17 +58,24 @@
             <span :class="$style.userText">Confirm password</span>
             <el-input
               v-model="confirmPassword"
-              placeholder="Type Username"
-              suffix-icon="el-icon-price-tag"
+              placeholder="Type Password"
+              show-password
               :class="$style.userInput"
             />
           </div>
         </div>
       </div>
       <el-button type="primary" :class="$style.btnAdd" @click="onClickAdd">
-        Adding Employee
+        {{ getTextButton }}
       </el-button>
     </div>
+    <toast-notification
+      :type="toast.type"
+      :text="toast.text"
+      :show-toast="toast.isShow"
+      @close="closeToast"
+    >
+    </toast-notification>
   </div>
 </template>
 
@@ -75,28 +83,84 @@
 import axios from 'axios'
 export default {
   name: 'ManageEmployee',
-  data() {
-    return {
-      user: {
-        isAdmin: false
+  props: {
+    user: {
+      type: Object,
+      default() {
+        return {}
       },
-      confirmPassword: '',
     }
   },
+  data() {
+    return {
+      manageUser: {},
+      confirmPassword: '',
+      isEditUser: false,
+      toast: {}
+    }
+  },
+  computed: {
+    getTextButton() {
+      return this.isEditUser ? 'Edit User' : 'Add user'
+    }
+  },
+  mounted() {
+    this.getEmployee()
+  },
+  destroyed() {
+    this.$emit('reset-edit-user')
+  },
   methods: {
-    getUser() {
-      this.user = JSON.parse(localStorage.getItem('user'))
+    getEmployee() {
+      if (this.user) {
+        this.manageUser = Object.assign({}, this.user)
+        this.manageUser.isAdmin = this.manageUser.isAdmin === 'true'
+        this.isEditUser = true
+      } else {
+        this.resetUser()
+      }
+    },
+    resetUser() {
+      this.manageUser = {
+        fullname: '',
+        phone: '',
+        email: '',
+        user: '',
+        password: '',
+        isAdmin: false,
+      }
     },
     onClickAdd() {
-      axios.post('http://localhost:3001/api/user/create', this.user)
-        .then((res) => {
-          this.$notify({
-          title: 'Add Employee',
-          message: 'Successfully added employees',
-          position: 'bottom-right',
-          type: 'success',
-        });
-      })
+      if (!this.isEditUser) {
+        axios.post('http://localhost:3001/api/user/create', this.manageUser)
+          .then((res) => {
+            if (res) {
+              this.resetUser()
+              this.showToast('success', 'Add user Success!!', true)
+            } else {
+              this.showToast('error', 'Error!!', true)
+            }
+        })
+      } else {
+        axios.put('http://localhost:3001/api/user/' + this.manageUser._id, this.manageUser)
+          .then((res) => {
+            if (res) {
+              this.showToast('success', 'Edit user Success!!', true)
+            } else {
+              this.showToast('error', 'Error!!', true)
+            }
+        })
+      }
+    },
+    showToast(type, text, isShow) {
+      this.toast = {
+        type,
+        text,
+        isShow
+      }
+    },
+    closeToast() {
+      this.toast.isShow = false
     }
   },
 }
@@ -109,6 +173,7 @@ export default {
   flex-direction: column;
   align-items: center;
   height: calc(100% - 75px);
+  position: relative;
 
   .content {
     margin: auto;

@@ -25,6 +25,23 @@
         label="is Admin"
         prop="isAdmin">
       </el-table-column>
+      <el-table-column fixed="right" label="Operations">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="onEdit(scope.$index, scope.row)"
+          >
+            Edit
+          </el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="onDeleteItem(scope.$index, scope.row)"
+          >
+            Delete
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -50,6 +67,10 @@ export default {
         })
       })
     },
+    onEdit(index, row) {
+      this.$emit('edit', row)
+      this.$emit('index-component', '6-2')
+    }
   },
 }
 </script>

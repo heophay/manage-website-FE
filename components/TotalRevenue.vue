@@ -86,15 +86,15 @@
       <div :class="$style.totalList">
         <div :class="$style.totalItem">
           <span :class="$style.totalItemLabel">Hóa đơn:</span>
-          <span :class="$style.totalItemResult">10</span>
+          <span :class="$style.totalItemResult">{{ total.totalBill }}</span>
         </div>
         <div :class="$style.totalItem">
           <span :class="$style.totalItemLabel">Sản phẩm:</span>
-          <span :class="$style.totalItemResult">150000000</span>
+          <span :class="$style.totalItemResult">{{ total.totalProduct }}</span>
         </div>
         <div :class="$style.totalItem">
           <span :class="$style.totalItemLabel">Số tiền:</span>
-          <span :class="$style.totalItemResult">150000000</span>
+          <span :class="$style.totalItemResult">{{ total.totalMoney }}</span>
         </div>
       </div>
     </div>
@@ -115,12 +115,13 @@ export default {
       bills: [],
       payitems: [],
       customers: [],
+      user: {},
+      total:{},
     }
   },
   mounted() {
+    this.getUser()
     this.getBills()
-    this.getPayitem()
-    this.getCustomer()
   },
   methods: {
     getDays() {
@@ -153,12 +154,16 @@ export default {
       }
       return years
     },
+    getUser() {
+      this.user = JSON.parse(localStorage.getItem('user'))
+    },
     getBills() {
-      axios.get('http://localhost:3001/api/bill').then((res) => {
+      const url = this.user.isAdmin
+        ? 'http://localhost:3001/api/bill/'
+        : 'http://localhost:3001/api/bill/' + this.user._id
+      axios.get(url).then((res) => {
         this.bills = res.data.bills
-        this.bills.forEach(function(e) {
-          e.employee = JSON.parse(localStorage.getItem('user')).fullname
-        })
+        this.getCustomer()
       })
     },
     getPayitem() {
@@ -171,6 +176,10 @@ export default {
           }, 0)
           bill.total_product = total
         })
+        this.bills.forEach(function(bill) {
+          bill._id = bill._id.slice(0, 10)
+        })
+        this.getTotal()
       })
     },
     getCustomer() {
@@ -183,9 +192,21 @@ export default {
           })
           bill.customer = tempCus.name
         })
-        console.log(JSON.stringify(self.bills))
+        this.getPayitem()
       })
     },
+    getTotal() {
+      this.total = this.bills.reduce(function(total, e) {
+        total.totalBill++
+        total.totalMoney = total.totalMoney + e.total
+        total.totalProduct = total.totalProduct + e.total_product
+        return total
+      }, {
+        totalBill: 0,
+        totalMoney: 0,
+        totalProduct: 0,
+      })
+    }
   },
 }
 </script>

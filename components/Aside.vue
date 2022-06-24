@@ -35,7 +35,7 @@
           <span>Doanh thu</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="5-1">Danh sách đơn hàng</el-menu-item>
+          <!-- <el-menu-item index="5-1">Danh sách đơn hàng</el-menu-item> -->
           <el-menu-item index="5-2">Thống kê</el-menu-item>
         </el-menu-item-group>
       </el-submenu>

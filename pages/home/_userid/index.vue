@@ -21,19 +21,17 @@
             <payment v-if="indexComponent === '3'" />
             <list-prod v-if="indexComponent === '4-1'" @index-component="onChangeIndex" @product="getProd" />
             <add-prod v-if="indexComponent === '4-2'" :product="editProduct" @reset-edit-product="onResetProduct" />
-            <list-bills v-if="indexComponent === '5-1'" />
+            <!-- <list-bills v-if="indexComponent === '5-1'" /> -->
             <total-revenue v-if="indexComponent === '5-2'" />
-            <list-employee v-if="indexComponent === '6-1'" />
-            <manage-employee v-if="indexComponent === '6-2'" />
+            <list-employee v-if="indexComponent === '6-1'" @index-component="onChangeIndex" @edit="getEmployy" />
+            <manage-employee v-if="indexComponent === '6-2'" :user="editUser" @reset-edit-user="onResetUser" />
           </div>
         </el-main>
     </el-container>
 </template>
 
 <script>
-import ManageEmployee from '~/components/ManageEmployee.vue'
 export default {
-  components: { ManageEmployee },
   name: 'HomeUser',
   layout: 'MainLayout',
   data() {
@@ -42,6 +40,7 @@ export default {
       headerTitle: 'Trang chủ',
       listAside: [],
       editProduct: null,
+      editUser: null,
       user: null,
     }
   },
@@ -61,6 +60,9 @@ export default {
     },
     getProd(val) {
       this.editProduct = val
+    },
+    getEmployy(val) {
+      this.editUser = val
     },
     getInitData() {
       this.listAside = [
@@ -104,6 +106,9 @@ export default {
     },
     onResetProduct() {
       this.editProduct = null
+    },
+    onResetUser() {
+      this.editUser = null
     }
   },
 }
