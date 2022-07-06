@@ -3,9 +3,9 @@
     <!-- Đơn hàng & Khách hàng-->
     <div :class="$style.screenMainInfo">
       <div :class="$style.screenMainInfoItem">
-        <span :class="$style.labelItem">Đơn hàng</span>
+        <span :class="$style.labelItem">Nhân viên</span>
         <div :class="$style.row">
-          <span :class="$style.rowLabel">Nhân viên</span>
+          <span :class="$style.rowLabel">Tên Nhân viên</span>
           <el-input
             v-model="user.fullname"
             suffix-icon="el-icon-user-solid"
@@ -25,23 +25,26 @@
       </div>
       <div :class="[$style.screenMainInfoItem, $style.screenCustomer]">
         <span :class="$style.labelItem">Khách hàng</span>
-        <div :class="$style.row">
-          <span :class="$style.rowLabel">Tên khách hàng</span>
+        <div :class="[$style.row]">
+          <span :class="[$style.rowLabel, $style.rowLabelCustomer]">Tên khách hàng</span>
           <el-input
             v-model="customer.name"
-            placeholder="Type customer's name"
+            placeholder="Name"
             suffix-icon="el-icon-user-solid"
             :class="[$style.rowInput, $style.rowCustomer]"
+            @input="checkValidPayment"
           />
         </div>
         <div :class="$style.row">
-          <span :class="$style.rowLabel">Số điện thoại</span>
+          <span :class="[$style.rowLabel, $style.rowLabelCustomer]">Số điện thoại</span>
           <el-input
             v-model="customer.phone"
-            placeholder="Type customer's phone number"
+            placeholder="Phone number"
             suffix-icon="el-icon-phone"
             :class="[$style.rowInput, $style.rowCustomer]"
+            @input="checkValidPayment"
           />
+          <el-button type="primary" :disabled="!customer.phone" @click="onSearchCustomer">Tìm</el-button>
         </div>
       </div>
     </div>
@@ -65,7 +68,7 @@
                 filterable
                 remote
                 reserve-keyword
-                placeholder="Please enter a keyword"
+                placeholder="Type product's name"
                 :remote-method="remoteMethod"
                 :loading="loading"
                 @change="onChangeValue"
@@ -85,9 +88,9 @@
               <span :class="$style.colLabel">Số lượng</span>
               <el-input
                 v-model="prod.quantity"
-                placeholder="Pick a date"
-                suffix-icon="el-icon-date"
+                suffix-icon="el-icon-shopping-bag-2"
                 :class="[$style.colInput, $style.colQuantity]"
+                @input="checkValidPayment"
               />
             </div>
           </el-col>
@@ -96,14 +99,14 @@
               <span :class="$style.colLabel">Đơn giá</span>
               <el-input
                 v-model="prod.price"
-                placeholder="Pick a date"
-                suffix-icon="el-icon-date"
+                suffix-icon="el-icon-price-tag"
                 :class="$style.colInput"
                 disabled
               />
             </div>
           </el-col>
           <el-button
+            :disabled="listProdBuy.length === 1"
             type="danger"
             icon="el-icon-delete"
             size="medium"
@@ -125,8 +128,15 @@
     </div>
 
     <el-row type="flex" :class="$style.rowPayment" justify="center">
-      <el-button type="primary" @click="onPay">Thanh toán</el-button>
+      <el-button type="primary" :disabled="!checkValidButton" @click="onPay">Thanh toán</el-button>
     </el-row>
+    <toast-notification
+      :type="toast.type"
+      :text="toast.text"
+      :show-toast="toast.isShow"
+      @close="closeToast"
+    >
+    </toast-notification>
   </div>
 </template>
 
@@ -139,6 +149,7 @@ export default {
       customer: {
         name: '',
         phone: '',
+        isExist: false,
       },
       listProdBuy:[],
       allProducts: [],
@@ -147,6 +158,8 @@ export default {
       loading: false,
       options: [],
       user: {},
+      checkValidButton: false,
+      toast: {}
     }
   },
   computed: {
@@ -164,7 +177,6 @@ export default {
   methods: {
     getUser() {
       this.user = JSON.parse(localStorage.getItem('user'))
-      console.log(this.user)
     },
     getProduct() {
       axios.get('http://localhost:3001/api/product').then((res) => {
@@ -185,6 +197,7 @@ export default {
         price: 0,
       })
       this.value.push(null)
+      this.checkValidPayment()
     },
     onDelete(prod) {
       const index = this.listProdBuy.indexOf(prod)
@@ -212,34 +225,90 @@ export default {
       })
       this.listProdBuy[index]._id = temp._id
       this.listProdBuy[index].price = temp.price
+      this.checkValidPayment()
     },
-    onPay() {
-      axios.post('http://localhost:3001/api/customer/create',this.customer)
+    async onPay() {
+      let payCustomer = {}
+      if (this.customer.isExist) {
+        payCustomer = this.customer
+      } else {
+        const cus = await this.putCustomer()
+        payCustomer = cus.data.customer
+      }
+      console.log(payCustomer)
+      const newBill = await this.putBill(payCustomer._id)
+      await this.putTransaction(newBill.data.bill._id)
+    },
+    putCustomer() {
+      return axios.post('http://localhost:3001/api/customer/create',this.customer)
+    },
+    putBill(idCustomer) {
+      const bill = {
+        id_customer: idCustomer,
+        id_user: this.user._id,
+        total: this.totalPrice
+      }
+      return axios.post('http://localhost:3001/api/bill/create', bill)
+    },
+    putTransaction(idBill) {
+      return axios.post('http://localhost:8080/api/addTransaction', this.getPayitemDB(idBill))
         .then((res) => {
-          const newCustomer = res.data.customer
-          const bill = {
-            total: this.totalPrice,
-            id_user: this.user._id,
-            id_customer: newCustomer._id
+          if (res) {
+            axios.post('http://localhost:3001/api/payitem/create', this.getPayitemDB(idBill))
+            this.showToast('success', 'Payment success!!', true)
+            this.resetData()
+          } else {
+            this.showToast('error', 'Faild!!', true)
           }
-          axios.post('http://localhost:3001/api/bill/create', bill)
-            .then((res) => {
-              const newBill = res.data.bill
-              console.log(JSON.stringify(newBill))
-              axios.post('http://localhost:3001/api/payitem/create', this.getPayitemDB(newBill._id))
-                .then((res) => {
-                  console.log(JSON.stringify(res))
-                })
-            })
         })
-
     },
     getPayitemDB(idBill) {
       return this.listProdBuy.map(function(e) {
         return {
-          id_bill: idBill,
-          id_product: e._id,
-          quantity: e.quantity,
+          "id_bill": idBill,
+          "id_product": e._id,
+          "quantity": e.quantity,
+        }
+      })
+    },
+    checkValidPayment() {
+      this.checkValidButton = this.checkValidCustomer() && this.checkValidProducts()
+    },
+    checkValidCustomer() {
+      return !!this.customer.name && !!this.customer.phone
+    },
+    checkValidProducts() {
+      const self = this
+      return self.listProdBuy.reduce(function(check, e, index) {
+        return check && self.value[index] !== null && !!Number(e.quantity)
+      }, true)
+    },
+    resetData() {
+      this.customer = {
+        name: '',
+        phone: '',
+      }
+      this.listProdBuy = []
+      this.value = []
+      this.onAddClick()
+    },
+    showToast(type, text, isShow) {
+      this.toast = {
+        type,
+        text,
+        isShow
+      }
+    },
+    closeToast() {
+      this.toast.isShow = false
+    },
+    onSearchCustomer() {
+      axios.get('http://localhost:3001/api/customer/' + this.customer.phone).then((res) => {
+        if (res.data.customers) {
+          this.customer = res.data.customers
+          this.customer.isExist = true
+        } else {
+          this.customer.name = ''
         }
       })
     }
@@ -268,7 +337,7 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 26vw;
+      width: 28vw;
 
       .labelItem {
         font-size: 22px;
@@ -288,16 +357,18 @@ export default {
         }
 
         .rowInput {
-          width: 74%;
+          width: 67%;
         }
       }
     }
 
     .screenCustomer {
       width: 30vw;
-
+      .rowLabelCustomer {
+        width: 120px;
+      }
       .rowCustomer {
-        width: 67% !important;
+        flex: 1;
       }
     }
   }

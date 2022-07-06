@@ -9,7 +9,6 @@
               <span :class="$style.colInfoLabel">Username</span>
               <el-input
                 v-model="user.username"
-                placeholder="Pick a date"
                 suffix-icon="el-icon-user-solid"
                 :disabled="true"
               />
@@ -20,8 +19,9 @@
               <span :class="$style.colInfoLabel">Fullname</span>
               <el-input
                 v-model="user.fullname"
-                placeholder="Pick a date"
+                placeholder="Type your Fullname"
                 suffix-icon="el-icon-s-custom"
+                @input="checkValidChangeInfo()"
               />
             </div>
           </el-col>
@@ -34,6 +34,7 @@
                 v-model="user.email"
                 placeholder="Type your email"
                 suffix-icon="el-icon-office-building"
+                @input="checkValidChangeInfo()"
               />
             </div>
           </el-col>
@@ -44,12 +45,13 @@
                 v-model="user.phone"
                 placeholder="Type your phone number"
                 suffix-icon="el-icon-phone"
+                @input="checkValidChangeInfo()"
               />
             </div>
           </el-col>
         </el-row>
         <span>
-          <el-button type="primary" @click="onChangeInfo">Thay đổi thông tin</el-button>
+          <el-button type="primary" :disabled="!checkValidButton" @click="onChangeInfo">Thay đổi thông tin</el-button>
         </span>
       </div>
       <!-- Password -->
@@ -111,15 +113,17 @@ export default {
         type: '',
       },
       passwordConfirm: '',
+      checkValidButton: false,
     }
   },
   computed: {
     isValid() {
-      return this.passwordConfirm === this.user.password
+      return this.passwordConfirm === this.user.password && !!this.user.password
     }
   },
   mounted() {
     this.user = JSON.parse(localStorage.getItem('user'))
+    this.checkValidChangeInfo()
   },
   methods: {
     onChangeInfo() {
@@ -153,6 +157,9 @@ export default {
           }
         })
     },
+    checkValidChangeInfo() {
+      this.checkValidButton = !!this.user.phone && !!this.user.fullname && !!this.user.email
+    }
   },
 }
 </script>
